@@ -25,8 +25,8 @@ export default {
   data () {
     return {
       loginForm: {
-        username: ' ',
-        password: ' '
+        username: 'admin',
+        password: '123456'
       },
       loginRules: {
         username: [
@@ -56,7 +56,7 @@ export default {
       this.$refs.loginForm.validate(async (valid) => {
         if (!valid) return
         const { data: res } = await this.$http.post('login', this.loginForm)
-        console.log(res)
+        // console.log(res)
         if (res.meta.status !== 200) return this.$message.error('登录失败')
         this.$message.success('登录成功')
         // 登录成功过后的token，保存到客户端的sessionStorage里面

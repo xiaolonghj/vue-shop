@@ -4,3 +4,16 @@ html,body,#app{
     padding: 0;
     height: 100%;
 }
+
+.el-breadcrumb{
+    margin-bottom: 15px;
+}
+.mt10{
+    margin-top: 10px;
+}
+.mt15{
+    margin-top: 15px;
+}
+.el-table th.gutter{
+    display: table-cell!important;
+}
