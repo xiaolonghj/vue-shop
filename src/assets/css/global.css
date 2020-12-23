@@ -17,3 +17,16 @@ html,body,#app{
 .el-table th.gutter{
     display: table-cell!important;
 }
+.top{
+    border-top: 1px solid #f3f1f1
+}
+.bottom{
+    border-bottom: 1px solid #f3f1f1
+}
+.vcenter{
+    display: flex;
+    align-items: center
+}
+.demo-block .el-tag{
+    margin: 10px 10px 10px 0;
+}

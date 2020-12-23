@@ -63,7 +63,12 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button type="danger" icon="el-icon-delete" size="mini" @click="deletDialog(scope.row.id)"></el-button>
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  size="mini"
+                  @click="deletDialog(scope.row.id)"
+                ></el-button>
               </el-tooltip>
               <el-tooltip
                 class="item"
@@ -72,7 +77,12 @@
                 placement="top"
                 :enterable="false"
               >
-                <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+                <el-button
+                  type="warning"
+                  icon="el-icon-setting"
+                  size="mini"
+                  @click="setRole(scope.row)"
+                ></el-button>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -137,6 +147,29 @@
         </span>
       </el-dialog>
       <!-- 删除用户数据弹窗 -->
+
+      <!-- 分配角色对话框 -->
+      <el-dialog title="分配角色" :visible.sync="setRoleDialogVisible" width="30%">
+        <div class="role-item">
+          <p>当前用户名：{{userInfo.username}}</p>
+          <p>当前角色：{{userInfo.role_name}}</p>
+          <p>
+            分配角色：
+            <el-select v-model="roleValue" placeholder="请选择">
+              <el-option
+                v-for="item in roleList"
+                :key="item.id"
+                :label="item.roleName"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </p>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="setRoleDialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="saveRole">确 定</el-button>
+        </span>
+      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -173,6 +206,10 @@ export default {
       usersList: [],
       dialogVisible: false,
       editDialogVisible: false,
+      setRoleDialogVisible: false,
+      userInfo: [],
+      roleList: [],
+      roleValue: '',
       //添加表单
       addRuleForm: {
         username: '',
@@ -306,21 +343,49 @@ export default {
       })
     },
     //删除用户数据提示弹窗
-     async deletDialog(id) {
-      const confirmResult = await this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).catch(error => error)
+    async deletDialog(id) {
+      const confirmResult = await this.$confirm(
+        '此操作将永久删除该用户, 是否继续?',
+        '提示',
+        {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+        }
+      ).catch((error) => error)
       //如果用户取消了删除返回的为字符串"cancle"
       //如果用户确认了删除返回的字符串为"confirm"
       // console.log(confirmResult)
-      if(confirmResult!=='confirm') return this.$message.info('取消了删除')
-      const {data:res}= await this.$http.delete('users/' + id )
-      if(res.meta.status!==200) return this.$message.error(res.meta.msg)
+      if (confirmResult !== 'confirm') return this.$message.info('取消了删除')
+      const { data: res } = await this.$http.delete('users/' + id)
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
       this.$message.success(res.meta.msg)
       this.getUsersList()
     },
+    //分配角色对话框
+    async setRole(userInfo) {
+      this.setRoleDialogVisible = true
+      this.userInfo = userInfo
+      const { data: res } = await this.$http.get('roles')
+      if (res.meta.status !== 200) return this.$message.error(res, meta.msg)
+      this.$message.success(res.meta.msg)
+      this.roleList = res.data
+      console.log(this.roleList)
+    },
+    //保存修改角色
+    async saveRole() {
+      if (!this.roleValue) return this.$message.error('请选择角色分配')
+      const { data: res } = await this.$http.put(
+        `users/${this.userInfo.id}/role`,
+        {
+          rid: this.roleValue,
+        }
+      )
+      if (res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      this.$message.success(res.meta.msg)
+      this.setRoleDialogVisible = false
+      this.getUsersList()
+    }
   },
 }
 </script>
