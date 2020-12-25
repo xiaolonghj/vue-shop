@@ -22,6 +22,9 @@ axios.interceptors.request.use(config => {
   config.headers.Authorization = window.sessionStorage.getItem('token');
   return config
 })
+/* 引入网格table组件 */
+import TreeTable from 'vue-table-with-tree-grid'
+Vue.component('tree-table', TreeTable)
 
 Vue.use(ElementUI)
 
