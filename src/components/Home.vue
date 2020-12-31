@@ -2,7 +2,7 @@
   <el-container>
     <el-header>
       <a href="##" class="logo">LOGO</a>
-      <el-button type="primary" @click="loginOut">退出</el-button>
+      <el-button type="primary" @click="loginOut" size="mini">退出</el-button>
     </el-header>
     <el-container>
       <el-aside :width="isCollapse ? '64px' : '200px'">
