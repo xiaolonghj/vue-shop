@@ -12,16 +12,30 @@ import './assets/css/global.css'
 import './assets/css/iconfont.css'
 /* 引入axios */
 import axios from 'axios'
+
+//导入NProgress的js和css文件
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 /* 配置根路径 */
 axios.defaults.baseURL = 'http://127.0.0.1:8888/api/private/v1/'
 Vue.prototype.$http = axios
 /*  axios请求拦截器添加token */
+
+//在request拦截器展示NProgress.start()
 axios.interceptors.request.use(config => {
+  NProgress.start();
   //为请求拦截器对象添加token验证的Authorization字段
   console.log(config);
   config.headers.Authorization = window.sessionStorage.getItem('token');
   return config
 })
+//在respone拦截器展示NProgress.done()
+axios.interceptors.response.use(config => {
+  NProgress.done();
+  return config
+})
+
 /* 引入网格table组件 */
 import TreeTable from 'vue-table-with-tree-grid'
 Vue.component('tree-table', TreeTable)
